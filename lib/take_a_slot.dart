@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:car_wash/Add_vehicle.dart';
 import 'package:car_wash/Take_a_slot-1.dart';
+import 'package:car_wash/booking.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:car_wash/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,8 +26,11 @@ class takeaslot extends StatefulWidget {
 }
 
 class _takeaslotState extends State<takeaslot> {
-  String? dropdown_value;
-  var listItem = ["Car-M5-KL-53 SG 4357", "Car-ShiftM5-KL-10 AB 4357"];
+  String? selectedVehicle;
+
+  String imageurl = "";
+  // var listItem = ["Car-M5-KL-53 SG 4357", "Car-ShiftM5-KL-10 AB 4357"];
+
   List set = [
     {
       "image": imagePage.car6,
@@ -49,8 +56,25 @@ class _takeaslotState extends State<takeaslot> {
       setState(() {
         file=File(imageFile.path);
       });
+
+    }
+
+  }
+
+  uploadFile() async {
+
+    if(file!=null){
+    // .ref('banner/${DateTime.now().toString()}-$name')
+    //     .putData(fileBytes,SettableMetadata(
+    // contentType: 'image/jpeg'
+    // ));
+      var uploadTask= await FirebaseStorage.instance.ref("images").child("${DateTime.now()}").putFile(file!,SettableMetadata(
+          contentType: 'image/jpeg'
+          ));
+      imageurl=await uploadTask.ref.getDownloadURL();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,43 +135,66 @@ class _takeaslotState extends State<takeaslot> {
                             left: width * 0.025,
                             bottom: width * 0.025,
                             top: width * 0.01),
-                        child: Container(
-                          height: width * 0.16,
-                          width: width * 0.85,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: colorPage.primaryColor,
-                            ),
-                            borderRadius: BorderRadius.circular(width * 0.03),
-                          ),
-                          child: DropdownButton(
-                            padding: EdgeInsets.all(width * 0.04),
-                            hint: Text("vehicle Number"),
-                            dropdownColor: Colors.white,
-                            icon: Icon(
-                              Icons.keyboard_arrow_down,
-                              color: colorPage.primaryColor,
-                            ),
-                            iconSize: width * 0.08,
-                            isExpanded: true,
-                            underline: SizedBox(),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: width * 0.05,
-                            ),
-                            value: dropdown_value,
-                            onChanged: (newValue) {
-                              setState(() {
-                                dropdown_value = newValue;
-                              });
-                            },
-                            items: listItem.map((valueItem) {
-                              return DropdownMenuItem(
-                                value: valueItem,
-                                child: Text(valueItem),
-                              );
-                            }).toList(),
-                          ),
+                        child: StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance.collection("carwash").doc(currentUserid).snapshots(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            var data = snapshot.data;
+                            Map<String, dynamic> DataMap =
+                            data?.data() as Map<String, dynamic>;
+                            List vehicles = DataMap['vehicles'];
+                            return Column(
+                              children: [
+                                // Text(DataMap['vehicles'][0]["Reg.number"].toString()),
+                                Container(
+                                  height: width * 0.16,
+                                  width: width * 0.85,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: colorPage.primaryColor,
+                                    ),
+                                    borderRadius: BorderRadius.circular(width * 0.03),
+                                  ),
+                                  child: DropdownButton(
+                                    padding: EdgeInsets.all(width * 0.04),
+                                    hint: Text("vehicle Number"),
+                                    dropdownColor: Colors.white,
+                                    icon: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      color: colorPage.primaryColor,
+                                    ),
+                                    iconSize: width * 0.08,
+                                    isExpanded: true,
+                                    underline: SizedBox(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: width * 0.05,
+                                    ),
+                                    value: selectedVehicle,
+                                    onChanged: (newValue) {
+                                      setState(() {
+
+                                        selectedVehicle = newValue.toString();
+                                      });
+                                    },
+                                    items: vehicles.map((valueItem) {
+                                      return DropdownMenuItem(
+                                        value:  valueItem["vehicle"] +"-"+ valueItem['model'] +"\n"+ valueItem['Reg.number'],
+                                        child: Text(
+                                            valueItem["vehicle"] +"-"+ valueItem['model'] +"-"+ valueItem['Reg.number'],
+                                            style:TextStyle(
+                                              fontSize: width*0.045
+                                            ) ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
                         ),
                       ),
                       SizedBox(
@@ -218,7 +265,7 @@ class _takeaslotState extends State<takeaslot> {
                                  height: width * 0.52,
                                  width: width * 0.9,
                                  color: colorPage.secondaryColor,
-                                 child: Image.file(file,fit: BoxFit.cover),
+                                 child: Image.network(imageurl),
                                  ):
                            Container(
                              height: width * 0.52,
@@ -253,6 +300,34 @@ class _takeaslotState extends State<takeaslot> {
                                ),
                              ),
                            ),
+                        ),
+                      ),
+                      SizedBox(height: width*0.02,),
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            uploadFile();
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Image added")));
+                            // uploadFile();
+                            setState(() {
+
+                            });
+
+                          },
+                          child: Container(
+                            height: width * 0.1,
+                            width: width * 0.3,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: colorPage.primaryColor),
+                                borderRadius: BorderRadius.circular(width * 0.1)),
+                            child: Center(
+                              child: Text("saved image",
+                                  style: TextStyle(
+                                      fontSize: width * 0.04,
+                                      color: colorPage.primaryColor,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                          ),
                         ),
                       ),
                       Row(
@@ -405,11 +480,32 @@ class _takeaslotState extends State<takeaslot> {
                       Center(
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => booking_1(),
-                                ));
+                            if (selectedVehicle != null && imageurl != "") {
+                              Map<String,dynamic> booking={
+                                "service_vehicle":selectedVehicle,
+                                "images":imageurl,
+                                "id":currentUserid,
+                                "pic_a_service":set[selectedOption]["text"],
+                                "pic_your_comfort":tap1[tap],
+                              };
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => booking_1(slotbooking:booking,),
+                                  ));
+
+                            }else{
+
+                              selectedVehicle == null
+                                  ? ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("choose your service vehicle!")))
+                                  : ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                      Text("add your vehicle image")));
+                            }
                           },
                           child: Container(
                             height: width * 0.13,

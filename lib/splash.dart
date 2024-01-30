@@ -2,6 +2,7 @@ import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/home.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:car_wash/login.dart';
 import 'package:car_wash/login_signup.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,11 +22,14 @@ class _splashState extends State<splash> {
   getData()
   async {
     SharedPreferences _prefs= await SharedPreferences.getInstance();
-    login1 =_prefs.getBool("login")??false;
-    print(login1);
-    Future.delayed(Duration(seconds: 4)).then((value) =>
+
+    login1=_prefs.getBool("login")??false;
+    currentUserid=_prefs.getString("id")??"";
+    currentUserName=_prefs.getString("name")??"";
+
+    Future.delayed(Duration(seconds: 3)).then((value) =>
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>login1==false? login_Signup():bottom_bar())));
+            context, MaterialPageRoute(builder: (context) =>login1?bottom_bar():login_Signup())));
   }
   @override
   void initState() {

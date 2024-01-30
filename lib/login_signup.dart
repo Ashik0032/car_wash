@@ -16,11 +16,8 @@ class login_Signup extends StatefulWidget {
 }
 
 class _login_SignupState extends State<login_Signup> {
-  bool login1 =false;
-  getData() async {
-    SharedPreferences _prefs =await SharedPreferences.getInstance();
-    _prefs.setBool("login",true);
-  }
+//  bool login1 =false;
+
   @override
   void initState() {
 
@@ -61,12 +58,7 @@ class _login_SignupState extends State<login_Signup> {
               children: [
                 InkWell(
                   onTap: () {
-                    getData();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>login(),
-                        ));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => login(email: "", password: ""),));
                   },
                   child: Container(
                     height: width * 0.13,
@@ -89,7 +81,7 @@ class _login_SignupState extends State<login_Signup> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => signup(),
+                          builder: (context) => signup(sign: false,),
                         ));
                   },
                   child: Container(

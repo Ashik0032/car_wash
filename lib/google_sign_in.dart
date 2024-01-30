@@ -1,12 +1,25 @@
+import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/home.dart';
+import 'package:car_wash/login.dart';
+import 'package:car_wash/signup.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'main.dart';
+// String? userimages;
 class AuthMethods {
   final FirebaseAuth auth = FirebaseAuth.instance;
+
+  // setdata() async {
+  //   SharedPreferences _prefs =await SharedPreferences.getInstance();
+  //   _prefs.setBool("login",true);
+  //   _prefs.setString("name", currentUserName.toString());
+  //   _prefs.setString("id", currentUserid.toString());
+  // }
 
   getCurrentUser() async {
     return await auth.currentUser;
@@ -28,30 +41,32 @@ class AuthMethods {
 
     UserCredential result = await firebaseAuth.signInWithCredential(credential);
     User? userDetails = result.user;
+    currentUserName=userDetails!.displayName;
+    currentUserEmail=userDetails!.email;
+    currentUserimage=userDetails!.photoURL;
+    currentUserid=userDetails!.uid;
 
-    if (result != null) {
-      Map<String, dynamic> userInfoMap = {
-        "email": userDetails!.email,
-        "name": userDetails.displayName,
-        // "images": userDetails.photoURL,
-        "password": userDetails.uid
-      };
 
-      await DatabaseMethods()
-          .addUser(userDetails.uid, userInfoMap)
-          .then((value) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => home()));
-      });
+    var userlist= await FirebaseFirestore.instance.collection("carwash").where("email",isEqualTo:currentUserEmail).get();
+
+    if(userlist.docs.isEmpty){
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => signup(sign: true,),));
+    }else{
+      // Navigator.push(context, CupertinoPageRoute(builder: (context) => signup(sign: true,),));
+      SharedPreferences prefs=await SharedPreferences.getInstance();
+      prefs .setString("name", currentUserName!);
+      prefs.setBool("login",true);
+      //
+      // currentUserName=userlist.docs[0]["name"];
+      // currentUserEmail=userlist.docs[0]["email"];
+      // currentUserimage=userlist.docs[0]["images"];
+      // currentUserid=userlist.docs[0].id;
+
+      // setdata();
+      Navigator.push(context, CupertinoPageRoute(builder: (context) => bottom_bar(),));
+
     }
-  }
-}
 
-
-
-class DatabaseMethods{
-  Future addUser(String userId, Map<String, dynamic>  userInfoMap){
-    return FirebaseFirestore.instance.collection("carwash").doc(userId).set(userInfoMap);
   }
 }
 

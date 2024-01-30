@@ -1,36 +1,60 @@
+
+import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/google_sign_in.dart';
+import 'package:car_wash/home.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:car_wash/location.dart';
 import 'package:car_wash/signup.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'contact number.dart';
 import 'main.dart';
 
 class login extends StatefulWidget {
-  const login({super.key});
+  const login({super.key, required this.email, required this.password, });
+  final String email;
+  final String password;
+
 
   @override
   State<login> createState() => _loginState();
 }
 
 class _loginState extends State<login> {
+  setdata() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setBool("login", true);
+    _prefs.setString("name", currentUserName.toString());
+    _prefs.setString("id", currentUserid.toString());
+  }
+
   bool tap = true;
   TextEditingController password_controller = TextEditingController();
   TextEditingController email_controller = TextEditingController();
   final emailvallidation =
-  RegExp(r"^[a-z0-9.a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z0-9]+\.[a-z]+");
+      RegExp(r"^[a-z0-9.a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z0-9]+\.[a-z]+");
 
   final passwordvallidation =
       RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
   bool tik = false;
   final formkey = GlobalKey<FormState>();
   @override
+  void initState() {
+    email_controller.text=widget.email;
+    password_controller.text=widget.password;
+
+    // setdata();
+    // TODO: implement initState
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
@@ -101,13 +125,13 @@ class _loginState extends State<login> {
                           ),
                           enabledBorder: OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.circular(width * 0.025),
+                                  BorderRadius.circular(width * 0.025),
                               borderSide: BorderSide(
                                 color: colorPage.primaryColor,
                               )),
                           focusedBorder: OutlineInputBorder(
                               borderRadius:
-                              BorderRadius.circular(width * 0.025),
+                                  BorderRadius.circular(width * 0.025),
                               borderSide: BorderSide(
                                 color: colorPage.primaryColor,
                               )),
@@ -199,43 +223,72 @@ class _loginState extends State<login> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () {
+                          onTap: () async {
                             if (email_controller.text == "") {
-
                               email_controller.text == ""
                                   ? ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                      Text("please enter your email!")))
+                                      SnackBar(
+                                          content:
+                                              Text("please enter your email!")))
                                   : password_controller.text == ""
-                                  ? ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  content: Text(
-                                      "please enter your password!")))
-                                  : ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  content: Text(
-                                      "pleace enter your valid details")));
-
+                                      ? ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "please enter your password!")))
+                                      : ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  "pleace enter your valid details")));
                             } else {
+                              var data = await FirebaseFirestore.instance
+                                  .collection('carwash')
+                                  .where('email',
+                                      isEqualTo: email_controller.text)
+                                  .get();
+                              if (data.docs[0]["google"] == true) {
 
-                              FirebaseAuth.instance.signInWithEmailAndPassword(email: email_controller.text, password: password_controller.text).then((value) async {
-                                var data=await FirebaseFirestore.instance.collection("carwash").where("email",isEqualTo: email_controller.text).get();
+                                if(data.docs[0]["password"]==password_controller.text){
 
-                              });
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => location(),
-                                  )).catchError((Error){
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Center(
-                                            child:
-                                            Text(Error.code.toString()))));
-                              });
+                                  Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => bottom_bar(),), (route) => false);
+                                }else{
+
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("heeloo")));
+                                }
+                              } else {
+                                FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(
+                                        email: email_controller.text,
+                                        password: password_controller.text)
+                                    .then((value) async {
+                                  if (data.docs.isNotEmpty) {
+                                    currentUserName = data.docs[0]['name'];
+                                    currentUserEmail = data.docs[0]['email'];
+                                    currentUserPassword =
+                                        data.docs[0]['password'];
+                                    currentUserid = data.docs[0].id;
+                                    setdata();
+                                    // Future.delayed(Duration(seconds: 1)).then((value){
+                                    //   email_controller.clear();
+                                    //   password_controller.clear();
+                                    // });
+                                    // username = currentUserName
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => bottom_bar(),
+                                        ));
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        CupertinoPageRoute(
+                                          builder: (context) => signup(
+                                            sign: false,
+                                          ),
+                                        ));
+                                  }
+                                });
+                              }
                             }
-
                           },
                           child: Container(
                             height: width * 0.13,
@@ -260,7 +313,7 @@ class _loginState extends State<login> {
                             height: width * 0.13,
                             width: width * 0.6,
                             decoration: BoxDecoration(
-                              // color: colorPage.secondaryColor,
+                                // color: colorPage.secondaryColor,
                                 border: Border.all(
                                     color: colorPage.primaryColor,
                                     width: width * 0.007),
@@ -285,11 +338,9 @@ class _loginState extends State<login> {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.pop(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => signup(),
-                                ));
+                            Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) =>
+                                signup(sign: false),), (route) => false);
+
                           },
                           child: RichText(
                             text: TextSpan(

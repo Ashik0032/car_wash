@@ -1,3 +1,4 @@
+import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:car_wash/location.dart';
@@ -41,7 +42,7 @@ class _onSiteState extends State<onSite> {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => location(),
+                        builder: (context) => bottom_bar(),
                       ),
                       (route) => false,
                     );

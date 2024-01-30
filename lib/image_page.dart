@@ -24,4 +24,5 @@ class imagePage{
   static const upload="images/upload.png";
   static const rupay="images/rupay.png";
   static const google="images/Wrapper.svg";
+  static const profile="images/profile.png";
 }

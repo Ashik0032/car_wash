@@ -134,11 +134,7 @@ class _contact_numberState extends State<contact_number> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.pop(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => login(),
-                              ));
+                          Navigator.pop(context);
                         },
                         child: RichText(
                           text: TextSpan(

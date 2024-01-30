@@ -3,23 +3,26 @@ import 'package:car_wash/Take_a_slot-1.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:car_wash/order_details.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+import 'bottom_bar.dart';
 import 'main.dart';
 
 class confirmation extends StatefulWidget {
-  const confirmation({super.key});
+  const confirmation({super.key, required this.slotbooking});
+  final Map<String, dynamic> slotbooking;
 
   @override
   State<confirmation> createState() => _confirmationState();
 }
 
 class _confirmationState extends State<confirmation> {
-  String tik = "O";
+  String tik = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +34,7 @@ class _confirmationState extends State<confirmation> {
             padding: EdgeInsets.all(width * 0.043),
             child: InkWell(
               onTap: () {
-                Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => booking_1(),
-                    ));
+                Navigator.pop(context);
               },
               child: Container(
                 height: width * 0.03,
@@ -82,7 +81,11 @@ class _confirmationState extends State<confirmation> {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => orderDetails(),));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => orderDetails(),
+                                  ));
                             },
                             child: Container(
                               height: width * 0.31,
@@ -98,15 +101,14 @@ class _confirmationState extends State<confirmation> {
                                   Row(
                                     children: [
                                       Padding(
-                                        padding:
-                                            EdgeInsets.all(width * 0.025),
+                                        padding: EdgeInsets.all(width * 0.025),
                                         child: Container(
                                           height: width * 0.25,
                                           width: width * 0.23,
                                           decoration: BoxDecoration(
                                               image: DecorationImage(
-                                                  image: AssetImage(
-                                                      imagePage.car5),
+                                                  image: NetworkImage(widget
+                                                      .slotbooking["images"]),
                                                   fit: BoxFit.cover),
                                               // color: Colors.greenAccent,
                                               borderRadius:
@@ -123,21 +125,24 @@ class _confirmationState extends State<confirmation> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          Text("Prowash",
+                                          Text(
+                                              widget
+                                                  .slotbooking["pic_a_service"],
                                               style: TextStyle(
                                                 // fontSize:14.36,
                                                 fontSize: width * 0.055,
                                                 fontWeight: FontWeight.w700,
                                                 color: colorPage.primaryColor,
                                               )),
-                                          Text("Navaneey",
+                                          Text(currentUserName.toString(),
                                               style: TextStyle(
                                                   color: colorPage.a14,
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: width * 0.04,
                                                   height: width * 0.001)),
                                           Text(
-                                            "Car-M5\nKL-53 SG 4357",
+                                            widget
+                                                .slotbooking["service_vehicle"],
                                             style: TextStyle(
                                                 fontSize: width * 0.04,
                                                 fontWeight: FontWeight.w500,
@@ -145,7 +150,7 @@ class _confirmationState extends State<confirmation> {
                                                 height: width * 0.003),
                                           ),
                                           Text(
-                                            "26/03/2022",
+                                            widget.slotbooking["take_a_date"],
                                             style: TextStyle(
                                                 fontSize: width * 0.035,
                                                 fontWeight: FontWeight.w400,
@@ -179,9 +184,10 @@ class _confirmationState extends State<confirmation> {
                                     fontWeight: FontWeight.w600,
                                     fontSize: width * 0.052),
                               ),
-                              Center(
+                              Padding(
+                                padding: EdgeInsets.only(left: width * 0.05),
                                 child: Text(
-                                  "52, Race Course Rd, Racecourse, Gandhi Nagar,\nBengaluru, Karnataka 560001",
+                                  widget.slotbooking["add_your_location"],
                                   style: TextStyle(
                                       fontSize: width * 0.043,
                                       fontWeight: FontWeight.w400),
@@ -222,7 +228,7 @@ class _confirmationState extends State<confirmation> {
                                                 MaterialStatePropertyAll(
                                                     colorPage.nineColor),
                                           ),
-                                          value: "O",
+                                          value: "Online payment",
                                           groupValue: tik,
                                           onChanged: (value) {
                                             setState(() {
@@ -254,7 +260,7 @@ class _confirmationState extends State<confirmation> {
                                                 MaterialStatePropertyAll(
                                                     colorPage.nineColor),
                                           ),
-                                          value: "C",
+                                          value: "Cash on delivery",
                                           groupValue: tik,
                                           onChanged: (value) {
                                             setState(() {
@@ -310,81 +316,156 @@ class _confirmationState extends State<confirmation> {
                     Center(
                       child: InkWell(
                         onTap: () {
-                          showModalBottomSheet(
-                            backgroundColor: colorPage.secondaryColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(width * 0.05),
-                                  topRight: Radius.circular(width * 0.05)),
-                            ),
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                height: width * 0.75,
-                                width: width * 1,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(width * 0.05),
-                                      topRight: Radius.circular(width * 0.05)),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.pop(context, MaterialPageRoute(builder: (context) => confirmation(),));
-                                          },
-                                          child: Icon(CupertinoIcons.multiply,
-                                              color: colorPage.a25,
-                                              size: width * 0.07),
-                                        ),
-                                        Text(
-                                          "Add your bank account",
-                                          style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: width * 0.06,
-                                              color: colorPage.primaryColor),
-                                        ),
-                                      ],
+                          if (tik != "") {
+                            widget.slotbooking.addAll({"payment_method": tik});
+
+                            FirebaseFirestore.instance
+                                .collection("booking")
+                                .add(
+                                  widget.slotbooking,
+                                );
+
+                            tik == "Online payment"
+                                ? showModalBottomSheet(
+                                    backgroundColor: colorPage.secondaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft:
+                                              Radius.circular(width * 0.05),
+                                          topRight:
+                                              Radius.circular(width * 0.05)),
                                     ),
-                                    Text(
-                                      "To book your service on Quick was you need\nto add a bank account",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: width * 0.05,
-                                          color: colorPage.fiftColor),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.push(context, MaterialPageRoute(builder: (context) => Payment(),));
-                                      },
-                                      child: Container(
-                                        height: width * 0.13,
-                                        width: width * 0.4,
+                                    context: context,
+                                    builder: (context) {
+                                      return Container(
+                                        height: width * 0.75,
+                                        width: width * 1,
                                         decoration: BoxDecoration(
-                                            color: colorPage.primaryColor,
-                                            borderRadius:
-                                                BorderRadius.circular(width * 1)),
-                                        child: Center(
-                                          child: Text("Get started",
-                                              style: TextStyle(
-                                                  color: colorPage.secondaryColor,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: width * 0.05)),
+                                          borderRadius: BorderRadius.only(
+                                              topLeft:
+                                                  Radius.circular(width * 0.05),
+                                              topRight: Radius.circular(
+                                                  width * 0.05)),
                                         ),
-                                      ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Icon(
+                                                      CupertinoIcons.multiply,
+                                                      color: colorPage.a25,
+                                                      size: width * 0.07),
+                                                ),
+                                                Text(
+                                                  "Add your bank account",
+                                                  style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      fontSize: width * 0.06,
+                                                      color: colorPage
+                                                          .primaryColor),
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              "To book your service on Quick was you need\nto add a bank account",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w300,
+                                                  fontSize: width * 0.05,
+                                                  color: colorPage.fiftColor),
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Payment(),
+                                                    ));
+                                              },
+                                              child: Container(
+                                                height: width * 0.13,
+                                                width: width * 0.4,
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        colorPage.primaryColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            width * 1)),
+                                                child: Center(
+                                                  child: Text("Get started",
+                                                      style: TextStyle(
+                                                          color: colorPage
+                                                              .secondaryColor,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize:
+                                                              width * 0.05)),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : showModalBottomSheet(
+                                    backgroundColor: colorPage.secondaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft:
+                                              Radius.circular(width * 0.05),
+                                          topRight:
+                                              Radius.circular(width * 0.05)),
                                     ),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
+                                    context: context,
+                                    builder: (context) {
+                                      return Container(
+                                        height: width * 0.9,
+                                        width: width * 1,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                                height: width * 0.35,
+                                                width: width * 0.35,
+                                                child: Lottie.asset(
+                                                    imagePage.lottie)),
+                                            Text(
+                                              "Booking successful",
+                                              style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: width * 0.08,
+                                                  color:
+                                                      colorPage.primaryColor),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                            if (tik != "Online payment") {
+                              Future.delayed(Duration(seconds: 3))
+                                  .then((value) => Navigator.pushReplacement(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (context) => bottom_bar(),
+                                      )));
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("enter your payment method")));
+                          }
                         },
                         child: Container(
                           height: width * 0.13,
@@ -393,7 +474,7 @@ class _confirmationState extends State<confirmation> {
                               color: colorPage.primaryColor,
                               borderRadius: BorderRadius.circular(width * 1)),
                           child: Center(
-                            child: Text("Add",
+                            child: Text("Proceed",
                                 style: TextStyle(
                                     color: colorPage.secondaryColor,
                                     fontWeight: FontWeight.w600,

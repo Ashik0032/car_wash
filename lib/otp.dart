@@ -112,10 +112,7 @@ class _otpState extends State<otp> {
                       InkWell(
                         onTap: () {
                           Navigator.pop(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => login(),
-                              ));
+                              context);
                         },
                         child: RichText(
                           text: TextSpan(

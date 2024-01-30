@@ -1,5 +1,6 @@
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/home.dart';
+import 'package:car_wash/login.dart';
 import 'package:car_wash/on_site.dart';
 import 'package:car_wash/otp.dart';
 import 'package:car_wash/profile.dart';
@@ -31,6 +32,12 @@ class _bottom_barState extends State<bottom_bar>
     profile(),
   ];
   @override
+
+  void initState() {
+
+    // TODO: implement initState
+    super.initState();
+  }
   Widget build(BuildContext context) {
     return Scaffold(
         body: abc[selectIndex],

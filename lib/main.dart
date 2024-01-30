@@ -1,4 +1,5 @@
 import 'package:car_wash/Confirmation.dart';
+import 'package:car_wash/Edit_profile.dart';
 import 'package:car_wash/Notifications.dart';
 import 'package:car_wash/Payment.dart';
 import 'package:car_wash/Power_wash.dart';
@@ -36,6 +37,35 @@ Future<void> main() async {
 var width;
 var height;
 
+String? currentUserName;
+String? currentUserEmail;
+String? currentUserPassword;
+String? currentUserid;
+String? currentUserimage;
+
+setSearchParam(String caseNumber) {
+  List<String> caseSearchList = [];
+  String temp = "";
+
+  List<String> nameSplits = caseNumber.split(" ");
+  for (int i = 0; i < nameSplits.length; i++) {
+    String name = "";
+
+    for (int k = i; k < nameSplits.length; k++) {
+      name = name + nameSplits[k] + " ";
+    }
+    temp = "";
+
+    for (int j = 0; j < name.length; j++) {
+      temp = temp + name[j];
+      caseSearchList.add(temp.toUpperCase());
+    }
+  }
+  // print(caseSearchList);
+  return caseSearchList;
+}
+
+
 class carWash extends StatelessWidget {
   const carWash({super.key});
   @override
@@ -58,3 +88,20 @@ class carWash extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

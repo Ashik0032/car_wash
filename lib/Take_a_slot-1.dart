@@ -1,4 +1,5 @@
 import 'package:car_wash/Confirmation.dart';
+import 'package:car_wash/booking.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:car_wash/take_a_slot.dart';
@@ -10,7 +11,9 @@ import 'home.dart';
 import 'main.dart';
 
 class booking_1 extends StatefulWidget {
-  const booking_1({super.key});
+  const booking_1({super.key,required this.slotbooking});
+  final Map<String,dynamic> slotbooking;
+
 
   @override
   State<booking_1> createState() => _booking_1State();
@@ -18,30 +21,29 @@ class booking_1 extends StatefulWidget {
 
 class _booking_1State extends State<booking_1> {
   String? choose;
-  String? choose1;
-  String? choose2;
-  var item = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18"
-  ];
-  var item1 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-  var item2 = ["2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"];
+
+  // var item = [
+  //   "1",
+  //   "2",
+  //   "3",
+  //   "4",
+  //   "5",
+  //   "6",
+  //   "7",
+  //   "8",
+  //   "9",
+  //   "10",
+  //   "11",
+  //   "12",
+  //   "13",
+  //   "14",
+  //   "15",
+  //   "16",
+  //   "17",
+  //   "18"
+  // ];
+  // var item1 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+  // var item2 = ["2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"];
   List time = [
     "09:00am",
     "10:00am",
@@ -54,7 +56,7 @@ class _booking_1State extends State<booking_1> {
   ];
   int set = 0;
   TextEditingController name_controller = TextEditingController();
-  TextEditingController name_controller1 = TextEditingController();
+  TextEditingController location_name_controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -266,7 +268,7 @@ class _booking_1State extends State<booking_1> {
                         padding: EdgeInsets.only(
                             bottom: width * 0.06, top: width * 0.01),
                         child: TextFormField(
-                          controller: name_controller1,
+                          controller: location_name_controller,
                           textCapitalization: TextCapitalization.words,
                           keyboardType: TextInputType.multiline,
                           textInputAction: TextInputAction.done,
@@ -316,11 +318,36 @@ class _booking_1State extends State<booking_1> {
                       Center(
                         child: InkWell(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => confirmation(),
-                                ));
+                            if (time != "" && location_name_controller.text !="") {
+                              widget.slotbooking.addAll(
+                                  {
+                                    "take_a_date":"05/10/2024",
+                                    "pic_slot":time[set],
+                                    "add_your_note":name_controller.text,
+                                    "add_your_location":location_name_controller.text,
+                                  }
+                              );
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => confirmation(slotbooking: widget.slotbooking),
+                                  ));
+
+                            }else{
+
+                              time == ""
+                                  ? ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text("enter your time"))):
+                             ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                      Text("add your location")));
+                            }
+
+
+
                           },
                           child: Container(
                             height: width * 0.13,

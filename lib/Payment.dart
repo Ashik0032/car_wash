@@ -41,11 +41,7 @@ class _PaymentState extends State<Payment> {
             padding: EdgeInsets.all(width * 0.043),
             child: InkWell(
               onTap: () {
-                Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => confirmation(),
-                    ));
+                Navigator.pop(context);
               },
               child: Container(
                 height: width * 0.03,

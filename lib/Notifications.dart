@@ -88,15 +88,36 @@ class _notificationsState extends State<notifications> {
                         ],
                       ),
                     ),
-                    Dismissible(
-                      key: UniqueKey(),
-                      child: Container(
-                        height: width*0.85,
-                        child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 3,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
+                    Container(
+                      height: width*0.85,
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 3,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Dismissible(
+                            key: UniqueKey(),
+                            background: Row(
+                              children: [
+                                SizedBox(width: width*0.04,),
+                                Text("Delete",style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: width*0.04,
+                                  color: colorPage.primaryColor
+                                ),)
+                              ],
+                            ),
+                            secondaryBackground: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text("View",style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: width*0.04,
+                                    color: colorPage.primaryColor
+                                ),),
+                                SizedBox(width: width*0.04,),
+                              ],
+                            ),
+                            child: Container(
                               height: width*0.25,
                               width: width*1,
                               margin: EdgeInsets.only(bottom: width*0.03),
@@ -109,9 +130,9 @@ class _notificationsState extends State<notifications> {
                                         color: colorPage.a14
                                     )),
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     Padding(
@@ -135,15 +156,36 @@ class _notificationsState extends State<notifications> {
                         ],
                       ),
                     ),
-                    Dismissible(
-                      key: UniqueKey(),
-                      child: Container(
-                        height: width*0.85,
-                        child: ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 3,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
+                    Container(
+                      height: width*0.85,
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: 3,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Dismissible(
+                            key: UniqueKey(),
+                            background: Row(
+                              children: [
+                                SizedBox(width: width*0.04,),
+                                Text("Delete",style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: width*0.04,
+                                    color: colorPage.primaryColor
+                                ),)
+                              ],
+                            ),
+                            secondaryBackground: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text("View",style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: width*0.04,
+                                    color: colorPage.primaryColor
+                                ),),
+                                SizedBox(width: width*0.04,),
+                              ],
+                            ),
+                            child: Container(
                               height: width*0.25,
                               width: width*1,
                               margin: EdgeInsets.only(bottom: width*0.03),
@@ -156,9 +198,9 @@ class _notificationsState extends State<notifications> {
                                         color: colorPage.a14
                                     )),
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

@@ -33,6 +33,8 @@ class colorPage{
   static const a28=Color(0xffE5E5E5);
   static Color a29=const Color(0xff000000).withOpacity(0.20);
   static const a30=Color(0xffDDD9D6);
+  static const a31=Color(0x80000000);
+
 
 
 }
