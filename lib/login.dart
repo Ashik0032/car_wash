@@ -30,7 +30,7 @@ class login extends StatefulWidget {
 class _loginState extends State<login> {
   setdata() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.setBool("login", true);
+    _prefs.setBool("login",true);
     _prefs.setString("name", currentUserName.toString());
     _prefs.setString("id", currentUserid.toString());
   }
@@ -224,30 +224,43 @@ class _loginState extends State<login> {
                       children: [
                         InkWell(
                           onTap: () async {
-                            if (email_controller.text == "") {
-                              email_controller.text == ""
-                                  ? ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text("please enter your email!")))
-                                  : password_controller.text == ""
-                                      ? ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  "please enter your password!")))
-                                      : ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  "pleace enter your valid details")));
-                            } else {
+                            if(email_controller.text ==""){
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("please enter your email!")));
+                              return;
+                            }
+                            if(password_controller.text ==""){
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("please enter your password!")));
+                              return;
+                            }
+
+                            //
+                            // if (email_controller.text == "" && password_controller.text =="") {
+                            //   email_controller.text == ""
+                            //       ? ScaffoldMessenger.of(context).showSnackBar(
+                            //           SnackBar(
+                            //               content:
+                            //                   Text("please enter your email!")))
+                            //       : password_controller.text == ""
+                            //           ? ScaffoldMessenger.of(context)
+                            //               .showSnackBar(SnackBar(
+                            //                   content: Text(
+                            //                       "please enter your password!")))
+                            //           : ScaffoldMessenger.of(context)
+                            //               .showSnackBar(SnackBar(
+                            //                   content: Text(
+                            //                       "pleace enter your valid details")));
+                            // }
+
+                            // else {
                               var data = await FirebaseFirestore.instance
                                   .collection('carwash')
                                   .where('email',
                                       isEqualTo: email_controller.text)
                                   .get();
                               if (data.docs[0]["google"] == true) {
-
+                                setdata();
                                 if(data.docs[0]["password"]==password_controller.text){
+
 
                                   Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) => bottom_bar(),), (route) => false);
                                 }else{
@@ -258,8 +271,8 @@ class _loginState extends State<login> {
                                 FirebaseAuth.instance
                                     .signInWithEmailAndPassword(
                                         email: email_controller.text,
-                                        password: password_controller.text)
-                                    .then((value) async {
+                                        password: password_controller.text
+                                ).then((value) async {
                                   if (data.docs.isNotEmpty) {
                                     currentUserName = data.docs[0]['name'];
                                     currentUserEmail = data.docs[0]['email'];
@@ -285,10 +298,19 @@ class _loginState extends State<login> {
                                             sign: false,
                                           ),
                                         ));
+                                    setState(() {
+
+                                    });
+                                  //     .catchError((error) {
+                                    //   ScaffoldMessenger.of(context).showSnackBar(
+                                    //       SnackBar(
+                                    //           content:
+                                    //           Text("pleace add your new account")));
+                                    // });
                                   }
                                 });
                               }
-                            }
+                            // }
                           },
                           child: Container(
                             height: width * 0.13,

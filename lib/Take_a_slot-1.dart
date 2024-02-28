@@ -9,10 +9,14 @@ import 'package:flutter_svg/svg.dart';
 
 import 'home.dart';
 import 'main.dart';
+import 'model/booking_model.dart';
 
 class booking_1 extends StatefulWidget {
-  const booking_1({super.key,required this.slotbooking});
-  final Map<String,dynamic> slotbooking;
+   booking_1({super.key,required this.bookingModel});
+  // final Map<String,dynamic> slotbooking;
+  BookingModel bookingModel;
+
+
 
 
   @override
@@ -68,11 +72,7 @@ class _booking_1State extends State<booking_1> {
             padding: EdgeInsets.all(width * 0.043),
             child: InkWell(
               onTap: () {
-                Navigator.pop(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => takeaslot(),
-                    ));
+                Navigator.pop(context);
               },
               child: Container(
                 height: width * 0.03,
@@ -319,19 +319,29 @@ class _booking_1State extends State<booking_1> {
                         child: InkWell(
                           onTap: () {
                             if (time != "" && location_name_controller.text !="") {
-                              widget.slotbooking.addAll(
-                                  {
-                                    "take_a_date":"05/10/2024",
-                                    "pic_slot":time[set],
-                                    "add_your_note":name_controller.text,
-                                    "add_your_location":location_name_controller.text,
-                                  }
+                             BookingModel bookingModel =
+                             widget.bookingModel.copyWith(
+                                takeDate:"05/10/2024",
+                                picSlot: time[set],
+                                addYourNote: name_controller.text,
+                                addYourLocation: location_name_controller.text
                               );
+
+
+                              // widget.slotbooking.addAll(
+                              //     {
+                              //       "take_a_date":"05/10/2024",
+                              //       "pic_slot":time[set],
+                              //       "add_your_note":name_controller.text,
+                              //       "add_your_location":location_name_controller.text,
+                              //     }
+                              // );
 
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => confirmation(slotbooking: widget.slotbooking),
+                                    builder: (context) => confirmation(
+                                      bookingModel: bookingModel,),
                                   ));
 
                             }else{

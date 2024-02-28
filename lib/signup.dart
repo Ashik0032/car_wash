@@ -7,6 +7,7 @@ import 'package:car_wash/home.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:car_wash/login.dart';
 import 'package:car_wash/contact number.dart';
+import 'package:car_wash/model/user_Model.dart';
 import 'package:car_wash/on_site.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,10 +35,10 @@ class _signupState extends State<signup> {
   // }
 
   bool tap = true;
-  TextEditingController name_controller = TextEditingController();
-  TextEditingController email_controller = TextEditingController();
-  TextEditingController password_controller = TextEditingController();
-  TextEditingController number_controller = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController numberController = TextEditingController();
   final emailvallidation =
       RegExp(r"^[a-z0-9.a-z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-z0-9]+\.[a-z]+");
 
@@ -76,17 +77,12 @@ class _signupState extends State<signup> {
     }
   }
 
-
-
-
-
-
-
   @override
   void initState() {
     if (widget.sign == true) {
-      email_controller.text = currentUserEmail!.toString();
-      name_controller.text = currentUserName!.toString();
+      emailController.text = currentUserEmail!.toString();
+      nameController.text = currentUserName!.toString();
+      // imageurl =  currentUserimage.toString();
     }
 
 
@@ -138,14 +134,30 @@ class _signupState extends State<signup> {
                     children: [
                       Stack(
                         children: [
-                          imageurl == ""
-                              ? Container(
+                          widget.sign!=true?
+               imageurl==""?Container(
+                   height: width * 0.4,
+                   width: width * 0.4,
+                   decoration: BoxDecoration(
+                       shape: BoxShape.circle,
+                       image: DecorationImage(
+                           image: AssetImage(imagePage.profile),
+                           fit: BoxFit.cover)),
+                 )
+                     :
+                 CircleAvatar(
+                   radius: width * 0.19,
+                   backgroundColor: colorPage.secondaryColor,
+                   backgroundImage: NetworkImage(imageurl),
+
+                 ):
+                          imageurl==""?Container(
                             height: width * 0.4,
                             width: width * 0.4,
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                    image: AssetImage(imagePage.profile),
+                                    image: NetworkImage(currentUserimage!),
                                     fit: BoxFit.cover)),
                           )
                               :
@@ -169,6 +181,8 @@ class _signupState extends State<signup> {
                                         CupertinoActionSheetAction(
                                           onPressed: () {
                                             pickFile(ImageSource.gallery);
+                                            setState(() {
+                                            });
                                           },
                                           child: Text("Photo Gallery",
                                               style: TextStyle(
@@ -205,7 +219,7 @@ class _signupState extends State<signup> {
                                 radius: width * 0.05,
                                 backgroundColor: colorPage.primaryColor,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:  EdgeInsets.all(8.0),
                                   child: Image.asset(imagePage.upload),
                                 ),
                               ),
@@ -217,7 +231,7 @@ class _signupState extends State<signup> {
                         height: width * 0.08,
                       ),
                       TextFormField(
-                        controller: name_controller,
+                        controller: nameController,
                         textCapitalization: TextCapitalization.words,
                         keyboardType: TextInputType.multiline,
                         textInputAction: TextInputAction.done,
@@ -253,7 +267,7 @@ class _signupState extends State<signup> {
                         height: width * 0.08,
                       ),
                       TextFormField(
-                        controller: email_controller,
+                        controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.done,
                         readOnly: widget.sign,
@@ -298,7 +312,7 @@ class _signupState extends State<signup> {
                         height: width * 0.08,
                       ),
                       TextFormField(
-                        controller: password_controller,
+                        controller: passwordController,
                         textCapitalization: TextCapitalization.words,
                         keyboardType: TextInputType.multiline,
                         textInputAction: TextInputAction.done,
@@ -346,7 +360,7 @@ class _signupState extends State<signup> {
                         height: width * 0.08,
                       ),
                       TextFormField(
-                        controller: number_controller,
+                        controller: numberController,
                         textCapitalization: TextCapitalization.words,
                         keyboardType: TextInputType.number,
                         inputFormatters: [
@@ -402,110 +416,193 @@ class _signupState extends State<signup> {
                       children: [
                         InkWell(
                           onTap: () async {
-                            if (name_controller.text == "" &&
-                                email_controller.text == "" &&
-                                number_controller.text == "" &&
+                            if (nameController.text != "" &&
+                                emailController.text != "" &&
+                                passwordController.text != "" &&
+                                numberController.text != "" &&
+                                imageurl !="" &&
                                 formkey.currentState!.validate()) {
-                              name_controller.text == ""
-                                  ? ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content:
-                                              Text("please enter your name!")))
-                                  : email_controller.text == ""
-                                      ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                          content:
-                                              Text("please enter your email!")))
-                                      : password_controller.text == ""
-                                          ? ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      "please enter your password!")))
-                                          : number_controller.text == ""
-                                              ? ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          "please enter your contact number!")))
-                                              : ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                      SnackBar(content: Text("pleace enter your valid details")));
-                            } else {
-                              if (widget.sign == true) {
-                          var passid= await  FirebaseFirestore.instance
-                                    .collection("carwash")
-                                    .add({
-                                  "name": name_controller.text,
-                                  "email": email_controller.text,
-                                  "password": password_controller.text,
-                                  "phone_number": number_controller.text,
-                                  "images":imageurl,
-                                  "google":true,
-                                  "vehicles": [],
-                                  // "id": currentUserid,
-                                });
-                          currentUserid=passid.id;
-                                currentUserName = name_controller.text;
-                                // setdata();
-                          Future.delayed(Duration(seconds: 1)).then((value){
-                            email_controller.clear();
 
-                          });
+
+                              if (widget.sign == true) {
+
+                                userModel  loginModelData=userModel(
+                                    name: nameController.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  phoneNumber: numberController.text,
+                                  images: imageurl,
+                                  google: true,
+                                  vehicles: []
+                                );
+
+                             await  FirebaseFirestore.instance.collection("carwash").add(loginModelData.toMap()
+
+                             ).then((value){
+                               value.update(
+                                 // "id":value.id
+                                   loginModelData.copyWith(id: value.id).toMap()
+
+                               );
+                            currentUserid= value.id;
+                             });
+                                currentUserName = nameController.text;
+
+                                Future.delayed(Duration(seconds: 1)).then((value){
+                                  emailController.clear();
+                                  // nameController.clear();
+                                  // emailController.clear();
+                                  // passwordController.clear();
+                                  // numberController.clear();
+
+                                });
+
+
+                                // var passid= await  FirebaseFirestore.instance
+                                //     .collection("carwash")
+                                //     .add({
+                                //   "name": nameController.text,
+                                //   "email": emailController.text,
+                                //   "password": passwordController.text,
+                                //   "phoneNumber": numberController.text,
+                                //   "images":imageurl,
+                                //   "google":true,
+                                //   "vehicles": [],
+                                //   // "id": currentUserid,
+                                // });
+
+                                // setdata();
+
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => login(email: email_controller.text, password: password_controller.text,),
+                                      builder: (context) => login(email: emailController.text, password: passwordController.text,),
                                     ));
-
-
-
 
                               }
                               else{
                                 FirebaseAuth.instance
                                     .createUserWithEmailAndPassword(
-                                    email: email_controller.text,
-                                    password: password_controller.text)
+                                    email: emailController.text,
+                                    password: passwordController.text)
                                     .then((value) {
-                                  FirebaseFirestore.instance
-                                      .collection("carwash")
-                                      .add({
-                                    "name": name_controller.text,
-                                    "email": email_controller.text,
-                                    "password": password_controller.text,
-                                    "phone_number": number_controller.text,
-                                    "images":imageurl,
-                                    "google":false,
-                                    "vehicles": [],
-                                    // "id": currentUserid,
-                                  }).then((value){
-                                    value.update({
-                                      "id":value.id
-                                    });
+
+                                  userModel  loginModelData=userModel(
+                                      name: nameController.text,
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                      phoneNumber: numberController.text,
+                                      images: imageurl,
+                                      google: false,
+                                      vehicles: []
+                                  );
+
+                                  FirebaseFirestore.instance.collection("carwash").add(loginModelData.toMap()).then((value){
+                                    value.update(
+                                     // "id":value.id
+                                        loginModelData.copyWith(id: value.id).toMap()
+                                    );
                                   });
-                                  currentUserName = name_controller.text;
+
+                                  currentUserName = nameController.text;
 
                                   // setdata();
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => login(email: email_controller.text, password: password_controller.text,),
-                                      ),);
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => login(email: emailController.text, password: passwordController.text,),
+                                    ),);
                                   Future.delayed(Duration(seconds: 1)).then((value){
-                                    name_controller.clear();
-                                    email_controller.clear();
-                                    password_controller.clear();
-                                    number_controller.clear();
+                                    nameController.clear();
+                                    emailController.clear();
+                                    passwordController.clear();
+                                    numberController.clear();
 
                                   });
-                                }).catchError((Error) {
+                                }).catchError((error) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content:
-                                          Text(Error.code.toString())));
+                                          Text(error.toString())));
                                 });
 
+                                // FirebaseFirestore.instance
+                                  //     .collection("carwash")
+                                  //     .add({
+                                  //   // "name": nameController.text,
+                                  //   // "email": emailController.text,
+                                  //   // "password": passwordController.text,
+                                  //   // "phoneNumber": numberController.text,
+                                  //   "images":imageurl,
+                                  //   "google":false,
+                                  //   "vehicles": [],
+                                  //   // "id": currentUserid,
+                                  // }).then((value){
+                                  //   value.update({
+                                  //     "id":value.id
+                                  //   });
+                                  // });
 
 
                               }
+                            } else {
+                              if(widget.sign!=true){
+                                nameController.text == ""
+                                    ? ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                        Text("please enter your name!")))
+                                    : emailController.text == ""
+                                    ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content:
+                                    Text("please enter your email!")))
+                                    : passwordController.text == ""
+                                    ? ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    content: Text(
+                                        "please enter your password!")))
+                                    : numberController.text == ""
+                                    ? ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    content: Text(
+                                        "please enter your contact number!")))
+                                    : imageurl == ""
+                                    ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content:
+                                    Text("please add your images!")))
+                                    : ScaffoldMessenger.of(context)
+                                    .showSnackBar(
+                                    SnackBar(content: Text("pleace enter your valid details")));
+
+                              }
+
+                              nameController.text == ""
+                                  ? ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                      Text("please enter your name!")))
+                                  : emailController.text == ""
+                                  ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content:
+                                  Text("please enter your email!")))
+                                  : passwordController.text == ""
+                                  ? ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  content: Text(
+                                      "please enter your password!")))
+                                  : numberController.text == ""
+                                  ? ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  content: Text(
+                                      "please enter your contact number!")))
+                                  : imageurl == ""
+                                  ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content:
+                                  Text("add new images!")))
+                                  : ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                  SnackBar(content: Text("pleace enter your valid details")));
+
 
                             }
                           },

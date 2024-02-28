@@ -38,9 +38,26 @@ dependencies:
   google_sign_in: ^6.1.6
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
-
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "images/logo.png"
+  ios: false
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "images/logo.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "images/logo.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "images/logo.png"
   flutter_lints: ^2.0.0
 
 flutter:

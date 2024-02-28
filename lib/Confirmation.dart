@@ -2,6 +2,7 @@ import 'package:car_wash/Payment.dart';
 import 'package:car_wash/Take_a_slot-1.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:car_wash/model/booking_model.dart';
 import 'package:car_wash/order_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,8 +15,9 @@ import 'bottom_bar.dart';
 import 'main.dart';
 
 class confirmation extends StatefulWidget {
-  const confirmation({super.key, required this.slotbooking});
-  final Map<String, dynamic> slotbooking;
+  confirmation({super.key,required this.bookingModel});
+  // final Map<String, dynamic> slotbooking;
+  BookingModel bookingModel;
 
   @override
   State<confirmation> createState() => _confirmationState();
@@ -84,7 +86,13 @@ class _confirmationState extends State<confirmation> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => orderDetails(),
+                                    builder: (context) => orderDetails(image: widget.bookingModel.images,
+                                      pic_service:  widget.bookingModel.picService,
+                                      take_a_date:  widget.bookingModel.takeDate,
+                                      pic_slot: '',
+                                      payment_method: '',
+                                      // vehicle: '', model: '', Regnumber: '', client: '', phoneNumber: '',
+                                    ),
                                   ));
                             },
                             child: Container(
@@ -108,7 +116,7 @@ class _confirmationState extends State<confirmation> {
                                           decoration: BoxDecoration(
                                               image: DecorationImage(
                                                   image: NetworkImage(widget
-                                                      .slotbooking["images"]),
+                                                      .bookingModel.images),
                                                   fit: BoxFit.cover),
                                               // color: Colors.greenAccent,
                                               borderRadius:
@@ -127,7 +135,7 @@ class _confirmationState extends State<confirmation> {
                                         children: [
                                           Text(
                                               widget
-                                                  .slotbooking["pic_a_service"],
+                                                  .bookingModel.picService,
                                               style: TextStyle(
                                                 // fontSize:14.36,
                                                 fontSize: width * 0.055,
@@ -142,7 +150,7 @@ class _confirmationState extends State<confirmation> {
                                                   height: width * 0.001)),
                                           Text(
                                             widget
-                                                .slotbooking["service_vehicle"],
+                                                .bookingModel.serviceVehicle,
                                             style: TextStyle(
                                                 fontSize: width * 0.04,
                                                 fontWeight: FontWeight.w500,
@@ -150,7 +158,7 @@ class _confirmationState extends State<confirmation> {
                                                 height: width * 0.003),
                                           ),
                                           Text(
-                                            widget.slotbooking["take_a_date"],
+                                            widget.bookingModel.takeDate,
                                             style: TextStyle(
                                                 fontSize: width * 0.035,
                                                 fontWeight: FontWeight.w400,
@@ -187,7 +195,7 @@ class _confirmationState extends State<confirmation> {
                               Padding(
                                 padding: EdgeInsets.only(left: width * 0.05),
                                 child: Text(
-                                  widget.slotbooking["add_your_location"],
+                                  widget.bookingModel.addYourLocation,
                                   style: TextStyle(
                                       fontSize: width * 0.043,
                                       fontWeight: FontWeight.w400),
@@ -317,13 +325,19 @@ class _confirmationState extends State<confirmation> {
                       child: InkWell(
                         onTap: () {
                           if (tik != "") {
-                            widget.slotbooking.addAll({"payment_method": tik});
+                          BookingModel bookingModel=  widget.bookingModel.copyWith(
+                              paymentMethod: tik,
+                            );
+                            // widget.slotbooking.addAll({"payment_method": tik});
 
                             FirebaseFirestore.instance
-                                .collection("booking")
-                                .add(
-                                  widget.slotbooking,
-                                );
+                                .collection("booking").add(
+                                  bookingModel.toMap()).then((value)
+                            {
+                              value.update(
+                                      bookingModel.copyWith(id: value.id).toMap()
+                                  );
+                            });
 
                             tik == "Online payment"
                                 ? showModalBottomSheet(

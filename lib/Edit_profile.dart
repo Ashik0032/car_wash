@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:car_wash/model/user_Model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +15,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'main.dart';
+import 'model/user_Model.dart';
+import 'model/user_Model.dart';
+import 'model/user_Model.dart';
+import 'model/user_Model.dart';
 
 class edit_profile extends StatefulWidget {
   const edit_profile({super.key, required this.name1, required this.email,
@@ -30,8 +37,21 @@ class edit_profile extends StatefulWidget {
 
 class _edit_profileState extends State<edit_profile> {
 
-  String imageurl = "";
+  // Future<void> changePassword(String newPassword , String newEmail) async {
+  //   User? user = FirebaseAuth.instance.currentUser;
+  //   try {
+  //     await user?.updatePassword(newPassword);
+  //     await user?.updateEmail(newEmail);
+  //     print("new email :   $newEmail  ------------------------------------^^^^^^^6");
+  //     print("new email :   $newPassword  ------------------------------------++++++");
+  //     print("Password updated successfully");
+  //   } catch (error) {
+  //     print("Error updating password: $error");
+  //   }
+  //
+  // }
 
+  String imageurl = "";
   bool tap = true;
   TextEditingController name_controller = TextEditingController();
   TextEditingController email_controller = TextEditingController();
@@ -71,13 +91,26 @@ class _edit_profileState extends State<edit_profile> {
       Navigator.pop(context);
     }
   }
+  userModel? usermodel;
+
+setModelfunc(){
+    FirebaseFirestore.instance.collection("carwash").doc(currentUserid).get().then((value){
+
+      usermodel =userModel.fromMap(value.data()!);
+    });
+}
+
+
+
   @override
   void initState() {
+    // TODO: implement initState
+    setModelfunc();
+    imageurl=widget.image;
     name_controller.text=widget.name1;
     email_controller.text=widget.email;
     password_controller.text=widget.password;
     number_controller.text=widget.number;
-    // TODO: implement initState
     super.initState();
   }
   @override
@@ -103,11 +136,12 @@ class _edit_profileState extends State<edit_profile> {
           ),
         ),
         title: Text("Edit User",
-            style: TextStyle(
-              fontSize: width * 0.055,
-              fontWeight: FontWeight.w500,
-              color: colorPage.thirdColor,
-            )),
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: width * 0.08,
+            color: colorPage.primaryColor,
+          ),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(width * 0.05),
@@ -123,23 +157,23 @@ class _edit_profileState extends State<edit_profile> {
                   children: [
                     Stack(
                       children: [
-                        // imageurl == ""
-                        //     ? Container(
-                        //         height: width * 0.4,
-                        //         width: width * 0.4,
-                        //         decoration: BoxDecoration(
-                        //             shape: BoxShape.circle,
-                        //             image: DecorationImage(
-                        //                 image: AssetImage(imagePage.profile),
-                        //                 fit: BoxFit.cover)),
-                        //       )
-                        //     :
-                        CircleAvatar(
-                          radius: width * 0.19,
-                          backgroundColor: colorPage.secondaryColor,
-                          backgroundImage: NetworkImage(widget.image),
+                        // imageurl != "" ?
+                        Container(
+                                height: width * 0.4,
+                                width: width * 0.4,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                        image: NetworkImage(imageurl),
+                                        fit: BoxFit.cover)),
+                              ),
 
-                        ),
+                        // CircleAvatar(
+                        //   radius: width * 0.19,
+                        //   backgroundColor: colorPage.secondaryColor,
+                        //   backgroundImage: NetworkImage(widget.image),
+                        //
+                        // ),
                         Positioned(
                           bottom: width * 0,
                           left: width * 0.25,
@@ -400,19 +434,35 @@ class _edit_profileState extends State<edit_profile> {
                                 ),
                                 CupertinoDialogAction(
                                   isDefaultAction: true,
-                                  onPressed: () {
-                                    FirebaseFirestore.instance
-                                        .collection('carwash')
-                                        .doc(currentUserid)
-                                        .update({
-                                      'name': name_controller.text,
-                                      'email': email_controller.text,
-                                      'password': password_controller.text,
-                                      "phone_number":number_controller.text,
-                                      "images": imageurl
-                                    });
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
+                                  onPressed: () async {
+                                    // changePassword(password_controller.text,email_controller.text);
+
+
+                                    FirebaseAuth.instance.currentUser?.updatePassword(
+                                        password_controller.text,
+                                    );
+                                   // if(imageurl != null && imageurl.isNotEmpty) {
+                                   //
+                                   // }
+                                   await FirebaseFirestore.instance
+                                       .collection('carwash')
+                                       .doc(currentUserid)
+                                       .update(
+                                     usermodel!.copyWith(
+                                       images: imageurl.toString(),
+                                       name: name_controller.text,
+                                       email: email_controller.text,
+                                       password: password_controller.text,
+                                       phoneNumber: number_controller.text,
+                                     ).toMap(),
+                                   );
+
+                                    currentUserName=name_controller.text;
+                                    currentUserEmail=email_controller.text;
+                                    currentUserPassword=password_controller.text;
+                                    // Navigator.pop(context);
+                                    // Navigator.pop(context);
+                                    Navigator.push(context, CupertinoPageRoute(builder: (context) => bottom_bar(),));
                                   },
                                   child: Text("Confirm"),
                                 ),

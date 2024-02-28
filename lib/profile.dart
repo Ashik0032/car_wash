@@ -4,6 +4,7 @@ import 'package:car_wash/added_vehicles.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:car_wash/login_signup.dart';
+import 'package:car_wash/model/user_Model.dart';
 import 'package:car_wash/recent_orders.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +22,8 @@ class profile extends StatefulWidget {
 }
 
 class _profileState extends State<profile> {
+  // userModel? lognModl;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,15 +35,16 @@ class _profileState extends State<profile> {
           height: width * 2.2,
           width: width * 1,
           // color: Colors.red,
-          child: StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance.collection("carwash").doc(currentUserid).snapshots(),
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection("carwash").doc(currentUserid).snapshots().map((snapshots){
+              return userModel.fromMap(snapshots.data()!);
+            }),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return Center(child: CircularProgressIndicator());
               }
 
-              var data = snapshot.data;
-
+              userModel? data = snapshot.data;
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,13 +70,14 @@ class _profileState extends State<profile> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                      data!="" ? CircleAvatar(
+                   data!=""?CircleAvatar(
                           radius: width * 0.15,
-                          backgroundImage:NetworkImage(data!["images"]),
-                        ):  CircleAvatar(
-                               radius: width * 0.15,
-                            backgroundImage: AssetImage(imagePage.person1),
-                                     ),
+                          backgroundImage:NetworkImage(data!.images.toString()),
+                        ):
+                   CircleAvatar(
+                     radius: width * 0.15,
+                     // backgroundColor: Colors.white,
+                   ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -81,7 +86,7 @@ class _profileState extends State<profile> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               // mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text(data!["name"],
+                                Text(data!.name.toString(),
                                     style: TextStyle(
                                       // fontSize:14.36,
                                       fontSize: width * 0.05,
@@ -94,7 +99,7 @@ class _profileState extends State<profile> {
                                 Container(
                                   width: width*0.5,
                                   child: Text(
-                                    data!["email"],
+                                    data!.email.toString(),
                                     style: TextStyle(
                                       overflow: TextOverflow.ellipsis,
                                         color: colorPage.a14,
@@ -107,7 +112,7 @@ class _profileState extends State<profile> {
                                   height: width * 0.01,
                                 ),
                                 Text(
-                                  data!["phone_number"],
+                                  data!.phoneNumber.toString(),
                                   style: TextStyle(
                                       color: colorPage.a14,
                                       fontWeight: FontWeight.w400,
@@ -119,8 +124,11 @@ class _profileState extends State<profile> {
                             GestureDetector(
                               onTap: () {
                                 Navigator.push(context, CupertinoPageRoute(builder: (context) =>
-                                    edit_profile(name1: data!["name"], email: data!["email"],
-                                      password: data!["password"], number: data!["phone_number"],/* id: data[0].id,*/ image:data!["images"],),));
+                                    edit_profile(name1: data.name.toString(),
+                                      email: data.email.toString(),
+                                      password: data.password.toString(),
+                                      number: data.phoneNumber.toString(),
+                                      /* id: data[0].id,*/ image:data.images.toString(),),));
                               },
                               child: Container(
                                 height: width * 0.13,

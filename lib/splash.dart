@@ -19,8 +19,7 @@ class splash extends StatefulWidget {
 
 class _splashState extends State<splash> {
   bool login1=false;
-  getData()
-  async {
+  getData() async {
     SharedPreferences _prefs= await SharedPreferences.getInstance();
 
     login1=_prefs.getBool("login")??false;

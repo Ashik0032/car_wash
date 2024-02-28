@@ -1,5 +1,6 @@
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:car_wash/model/user_Model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,6 +15,7 @@ class added_vehicles extends StatefulWidget {
 }
 
 class _added_vehiclesState extends State<added_vehicles> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,21 +57,25 @@ class _added_vehiclesState extends State<added_vehicles> {
           height: width * 2,
           child: Column(
             children: [
-              StreamBuilder<DocumentSnapshot>(
+              StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection("carwash")
                       .doc(currentUserid)
-                      .snapshots(),
+                      .snapshots().map((snapshot){
+                        return userModel.fromMap(snapshot.data()!);
+
+                  }),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
                     }
-                    var data = snapshot.data;
-                    Map<String, dynamic> DataMap =
-                        data?.data() as Map<String, dynamic>;
-                    List vehicles = DataMap['vehicles'];
+
+                    userModel? data = snapshot.data;
+                    // Map<String, dynamic> DataMap =
+                    //     data as Map<String, dynamic>;
+                    List vehicles = data!.vehicles!;
                     return Expanded(
-                      child:vehicles!.isEmpty? SizedBox() :
+                      child:vehicles.isEmpty? SizedBox() :
 
                       ListView.builder(
                         itemCount: vehicles.length,

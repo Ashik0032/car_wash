@@ -1,5 +1,6 @@
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:car_wash/model/booking_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -54,24 +55,28 @@ class _active_requestsState extends State<active_requests> {
                 width: width * 1,
                 height: width * 2,
                 child: Column(children: [
-                  StreamBuilder<QuerySnapshot>(
+                  StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .collection("booking")
                           .where("status", isEqualTo: "Accept")
-                          .where("id", isEqualTo: currentUserid)
-                          .snapshots(),
+                          .where("userid", isEqualTo: currentUserid)
+                          .snapshots().map((snapshots){
+                            return snapshots.docs.map((doc){
+                              return BookingModel.fromMap(doc.data());
+                            }).toList();
+                      }),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
                         }
-                        var data = snapshot.data!.docs;
+                        List<BookingModel> data=snapshot.data!;
 
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            data!.isEmpty
+                            data.isEmpty
                                 ? SizedBox()
                                 : ListView.separated(
                                     padding: EdgeInsets.zero,
@@ -99,8 +104,7 @@ class _active_requestsState extends State<active_requests> {
                                                 decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                         image: NetworkImage(
-                                                            data[index]
-                                                                ["images"]),
+                                                            data[index].images),
                                                         fit: BoxFit.cover),
                                                     // color: Colors.greenAccent,
                                                     borderRadius:
@@ -116,8 +120,7 @@ class _active_requestsState extends State<active_requests> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                    data[index]
-                                                        ["pic_a_service"],
+                                                    data[index].picService,
                                                     style: TextStyle(
                                                       // fontSize:14.36,
                                                       fontSize: width * 0.05,
@@ -127,8 +130,7 @@ class _active_requestsState extends State<active_requests> {
                                                           .primaryColor,
                                                     )),
                                                 Text(
-                                                  data[index]
-                                                      ["service_vehicle"],
+                                                  data[index].serviceVehicle,
                                                   style: TextStyle(
                                                       color:
                                                           colorPage.eigthColor,
@@ -138,7 +140,7 @@ class _active_requestsState extends State<active_requests> {
                                                       fontSize: width * 0.036),
                                                 ),
                                                 Text(
-                                                  data[index]["take_a_date"],
+                                                  data[index].takeDate    ,
                                                   style: TextStyle(
                                                       color:
                                                           colorPage.eigthColor,

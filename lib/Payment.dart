@@ -1,6 +1,7 @@
 import 'package:car_wash/Confirmation.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_flip_card/flutter_flip_card.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import 'Take_a_slot-1.dart';
+import 'bottom_bar.dart';
 import 'main.dart';
 
 class Payment extends StatefulWidget {
@@ -505,6 +507,12 @@ class _PaymentState extends State<Payment> {
                                   );
                                 },
                               );
+                              Future.delayed(Duration(seconds: 4))
+                                  .then((value) => Navigator.pushReplacement(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => bottom_bar(),
+                                  )));
                             },
                             child: Container(
                               height: width * 0.13,

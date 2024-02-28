@@ -1,5 +1,6 @@
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
+import 'package:car_wash/model/booking_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -56,17 +57,23 @@ class _recent_ordersState extends State<recent_orders> {
           width: width * 1,
           child: Column(
             children: [
-              StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection("booking").where("id",isEqualTo: currentUserid).snapshots(),
+              StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection("booking").
+                  where("userid",isEqualTo: currentUserid).snapshots().map((snapshots){
+                    return snapshots.docs.map((doc){
+                      return BookingModel.fromMap(doc.data());
+                    }).toList();
+                  }),
                   builder: (context, snapshot) {
                     if(!snapshot.hasData){
                       return Center(child: CircularProgressIndicator(),);
                     }
-                    var data =snapshot.data!.docs;
+                    List<BookingModel> data=snapshot.data!;
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        data!.isEmpty?SizedBox():
+                        data.isEmpty?SizedBox():
                         ListView.separated(
                           padding: EdgeInsets.zero,
                           shrinkWrap: true,
@@ -75,7 +82,19 @@ class _recent_ordersState extends State<recent_orders> {
                           itemBuilder: (BuildContext context, int index) {
                             return InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) =>orderDetails(),));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                    orderDetails(
+                                      image: data[index].images,
+                                      pic_service: data[index].picService,
+                                      take_a_date: data[index].takeDate,
+                                      pic_slot: data[index].picSlot,
+                                      payment_method: data[index].paymentMethod,
+                                      // vehicle: '',
+                                      // model: '',
+                                      // Regnumber: '',
+                                      // client: '',
+                                      // phoneNumber: '',
+                                    ),));
                               },
                               child: Container(
                                 height: width * 0.27,
@@ -95,7 +114,7 @@ class _recent_ordersState extends State<recent_orders> {
                                         decoration: BoxDecoration(
                                             image: DecorationImage(
                                                 image: NetworkImage(
-                                                    data[index]["images"]),
+                                                    data[index].images),
                                                 fit: BoxFit.cover),
                                             // color: Colors.greenAccent,
                                             borderRadius:
@@ -108,7 +127,7 @@ class _recent_ordersState extends State<recent_orders> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(data[index]["pic_a_service"],
+                                        Text(data[index].picService,
                                             style: TextStyle(
                                               // fontSize:14.36,
                                               fontSize: width * 0.05,
@@ -116,7 +135,7 @@ class _recent_ordersState extends State<recent_orders> {
                                               color: colorPage.primaryColor,
                                             )),
                                         Text(
-                                          data[index]["service_vehicle"],
+                                          data[index].serviceVehicle,
                                           style: TextStyle(
                                               color: colorPage.eigthColor,
                                               fontWeight: FontWeight.w400,
@@ -124,7 +143,7 @@ class _recent_ordersState extends State<recent_orders> {
                                               fontSize: width * 0.036),
                                         ),
                                         Text(
-                                          data[index]["take_a_date"],
+                                          data[index].takeDate,
                                           style: TextStyle(
                                               color: colorPage.eigthColor,
                                               fontWeight: FontWeight.w400,

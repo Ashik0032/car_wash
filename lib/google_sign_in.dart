@@ -14,12 +14,12 @@ import 'main.dart';
 class AuthMethods {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  // setdata() async {
-  //   SharedPreferences _prefs =await SharedPreferences.getInstance();
-  //   _prefs.setBool("login",true);
-  //   _prefs.setString("name", currentUserName.toString());
-  //   _prefs.setString("id", currentUserid.toString());
-  // }
+  setdata() async {
+    SharedPreferences _prefs =await SharedPreferences.getInstance();
+    _prefs.setBool("login",true);
+    _prefs.setString("name", currentUserName.toString());
+    _prefs.setString("id", currentUserid.toString());
+  }
 
   getCurrentUser() async {
     return await auth.currentUser;
@@ -44,25 +44,16 @@ class AuthMethods {
     currentUserName=userDetails!.displayName;
     currentUserEmail=userDetails!.email;
     currentUserimage=userDetails!.photoURL;
-    currentUserid=userDetails!.uid;
-
 
     var userlist= await FirebaseFirestore.instance.collection("carwash").where("email",isEqualTo:currentUserEmail).get();
 
     if(userlist.docs.isEmpty){
       Navigator.push(context, CupertinoPageRoute(builder: (context) => signup(sign: true,),));
     }else{
-      // Navigator.push(context, CupertinoPageRoute(builder: (context) => signup(sign: true,),));
-      SharedPreferences prefs=await SharedPreferences.getInstance();
-      prefs .setString("name", currentUserName!);
-      prefs.setBool("login",true);
-      //
-      // currentUserName=userlist.docs[0]["name"];
-      // currentUserEmail=userlist.docs[0]["email"];
-      // currentUserimage=userlist.docs[0]["images"];
-      // currentUserid=userlist.docs[0].id;
+      currentUserid=userlist.docs[0].id;
 
-      // setdata();
+      setdata();
+
       Navigator.push(context, CupertinoPageRoute(builder: (context) => bottom_bar(),));
 
     }
