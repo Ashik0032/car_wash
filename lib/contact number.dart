@@ -1,5 +1,5 @@
 import 'package:car_wash/color_page.dart';
-import 'package:car_wash/login.dart';
+import 'package:car_wash/Auth/screen/login.dart';
 import 'package:car_wash/otp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

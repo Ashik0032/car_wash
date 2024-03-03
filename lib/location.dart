@@ -1,6 +1,6 @@
 import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
-import 'package:car_wash/home.dart';
+import 'package:car_wash/home/screens/home.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

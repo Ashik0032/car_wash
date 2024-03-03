@@ -5,7 +5,7 @@ import 'package:car_wash/Take_a_slot-1.dart';
 import 'package:car_wash/booking.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
-import 'package:car_wash/login.dart';
+import 'package:car_wash/Auth/screen/login.dart';
 import 'package:car_wash/model/booking_model.dart';
 import 'package:car_wash/model/service_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'Custom_wash.dart';
-import 'home.dart';
+import 'home/screens/home.dart';
 import 'main.dart';
 
 class takeaslot extends StatefulWidget {

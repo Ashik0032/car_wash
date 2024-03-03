@@ -1,10 +1,10 @@
 import 'package:car_wash/color_page.dart';
-import 'package:car_wash/home.dart';
-import 'package:car_wash/login.dart';
+import 'package:car_wash/home/screens/home.dart';
+import 'package:car_wash/Auth/screen/login.dart';
 import 'package:car_wash/on_site.dart';
 import 'package:car_wash/otp.dart';
-import 'package:car_wash/profile.dart';
-import 'package:car_wash/signup.dart';
+import 'package:car_wash/home/screens/profile.dart';
+import 'package:car_wash/Auth/screen/signup.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar_v2/motion-badge.widget.dart';

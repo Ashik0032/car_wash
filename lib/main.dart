@@ -9,16 +9,16 @@ import 'package:car_wash/Take_a_slot-1.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/model/model_use_page.dart';
 import 'package:car_wash/order_details.dart';
-import 'package:car_wash/profile.dart';
+import 'package:car_wash/home/screens/profile.dart';
 import 'package:car_wash/take_a_slot.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:car_wash/booking.dart';
 import 'package:car_wash/location.dart';
 import 'package:car_wash/splash.dart';
-import 'package:car_wash/login_signup.dart';
-import 'package:car_wash/login.dart';
-import 'package:car_wash/signup.dart';
+import 'package:car_wash/Auth/screen/login_signup.dart';
+import 'package:car_wash/Auth/screen/login.dart';
+import 'package:car_wash/Auth/screen/signup.dart';
 import 'package:car_wash/contact number.dart';
 import 'package:car_wash/otp.dart';
 import 'package:car_wash/on_site.dart';
@@ -27,7 +27,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 
 import 'count.dart';
-import 'home.dart';
+import 'home/screens/home.dart';
 import 'bottom_bar.dart';
 
 Future<void> main() async {

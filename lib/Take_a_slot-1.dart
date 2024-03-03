@@ -7,7 +7,7 @@ import 'package:datepicker_dropdown/datepicker_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'home.dart';
+import 'home/screens/home.dart';
 import 'main.dart';
 import 'model/booking_model.dart';
 

@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:car_wash/Add_vehicle.dart';
 import 'package:car_wash/Notifications.dart';
-import 'package:car_wash/login.dart';
-import 'package:car_wash/login_signup.dart';
+import 'package:car_wash/Auth/screen/login.dart';
+import 'package:car_wash/Auth/screen/login_signup.dart';
 import 'package:car_wash/model/service_model.dart';
 import 'package:car_wash/take_a_slot.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,8 +21,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'main.dart';
-import 'model/booking_model.dart';
+import '../../main.dart';
+import '../../model/booking_model.dart';
 
 class home extends StatefulWidget {
 

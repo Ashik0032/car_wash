@@ -1,7 +1,7 @@
 import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
-import 'package:car_wash/login.dart';
+import 'package:car_wash/Auth/screen/login.dart';
 import 'package:car_wash/model/user_Model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
 
-import 'home.dart';
+import 'home/screens/home.dart';
 import 'main.dart';
 
 class addVehicle extends StatefulWidget {

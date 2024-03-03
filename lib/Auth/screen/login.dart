@@ -1,11 +1,11 @@
 
 import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
-import 'package:car_wash/google_sign_in.dart';
-import 'package:car_wash/home.dart';
+import 'package:car_wash/Auth/screen/google_sign_in.dart';
+import 'package:car_wash/home/screens/home.dart';
 import 'package:car_wash/image_page.dart';
 import 'package:car_wash/location.dart';
-import 'package:car_wash/signup.dart';
+import 'package:car_wash/Auth/screen/signup.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,8 +14,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'contact number.dart';
-import 'main.dart';
+import '../../contact number.dart';
+import '../../main.dart';
 
 class login extends StatefulWidget {
   const login({super.key, required this.email, required this.password, });

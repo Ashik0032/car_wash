@@ -1,12 +1,12 @@
 import 'package:car_wash/color_page.dart';
-import 'package:car_wash/home.dart';
+import 'package:car_wash/home/screens/home.dart';
 import 'package:car_wash/image_page.dart';
-import 'package:car_wash/login.dart';
-import 'package:car_wash/signup.dart';
+import 'package:car_wash/Auth/screen/login.dart';
+import 'package:car_wash/Auth/screen/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
+import '../../main.dart';
 
 class login_Signup extends StatefulWidget {
   const login_Signup({super.key});

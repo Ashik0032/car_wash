@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:car_wash/bottom_bar.dart';
 import 'package:car_wash/color_page.dart';
-import 'package:car_wash/google_sign_in.dart';
-import 'package:car_wash/home.dart';
+import 'package:car_wash/Auth/screen/google_sign_in.dart';
+import 'package:car_wash/home/screens/home.dart';
 import 'package:car_wash/image_page.dart';
-import 'package:car_wash/login.dart';
+import 'package:car_wash/Auth/screen/login.dart';
 import 'package:car_wash/contact number.dart';
 import 'package:car_wash/model/user_Model.dart';
 import 'package:car_wash/on_site.dart';
@@ -19,7 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
+import '../../main.dart';
 
 class signup extends StatefulWidget {
   const signup({super.key, required this.sign});

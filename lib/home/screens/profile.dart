@@ -3,7 +3,7 @@ import 'package:car_wash/active_requests.dart';
 import 'package:car_wash/added_vehicles.dart';
 import 'package:car_wash/color_page.dart';
 import 'package:car_wash/image_page.dart';
-import 'package:car_wash/login_signup.dart';
+import 'package:car_wash/Auth/screen/login_signup.dart';
 import 'package:car_wash/model/user_Model.dart';
 import 'package:car_wash/recent_orders.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
+import '../../main.dart';
 
 class profile extends StatefulWidget {
   const profile({super.key});
